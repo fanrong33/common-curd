@@ -1,0 +1,76 @@
+<include file="Public:header" />
+<body>
+
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-xs-2" style="padding-top:20px;">
+                    <include file="Public:nav" />
+                </div>
+                <div class="col-xs-10">
+
+                    <div style="margin-top: 20px; margin-bottom: 20px;">
+                        <a class="btn btn-default" href="{:U('Group/add')}">添加分组</a>
+                    </div>
+
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <td>名称</td>
+                                <td style="width:150px;">操作</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <if condition="$list">
+                                <volist name="list" id="rs">
+                                    <tr id="group_{$rs['id']}">
+                                        <td>{$rs['name']}</td>
+                                        <td>
+                                            <a href="{:U('Group/edit', array('id'=>$rs['id']))}">编辑</a> <span class="text-muted">|</span>
+                                            <a href="javascript:;" onclick="delete_group({$rs['id']})">删除</a>
+                                        </td>
+                                    </tr>
+                                </volist>
+                            <else/>
+                                <tr>
+                                    <td colspan="10" class="text-center">暂无数据</td>
+                                </tr>
+                            </if>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        $(document).ready(function(){
+
+        });
+
+
+        function delete_group(id){
+            if(confirm('确定删除？')){
+                $.ajax({
+                    type: "POST",
+                    url: "/group/delete",
+                    data: { id: id },
+                    dataType: "json",
+                    success: function(json){
+                        if(json.status == 1){
+                            $("#group_"+id).remove();
+
+                            toastr.success(json.info);
+                        }else{
+                            toastr.error(json.info);
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

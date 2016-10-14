@@ -1,0 +1,29 @@
+.sort {
+    padding-left: 0;
+    padding-right: 20px;
+    font-size: 14px;
+    text-align: left;
+    background-image: url("../images/sort_both.png");
+    background-repeat: no-repeat;
+    background-position: right center;
+    cursor: pointer;
+}
+.sort.desc {
+    background-image: url("../images/sort_desc.png");
+}
+.sort.asc {
+    background-image: url("../images/sort_asc.png");
+}
+
+@keyframes yellowfade {
+    from {
+        background: #ffffaa;
+    }
+    to {
+        background: transparent;
+    }
+}
+
+.highlight-fade {
+    animation: yellowfade 1.2s;
+}

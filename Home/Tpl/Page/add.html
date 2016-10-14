@@ -1,0 +1,99 @@
+<include file="Public:header" />
+<body>
+
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="padding-top: 20px;">
+
+                <div class="col-xs-2">
+                    <include file="Public:nav" />
+                </div>
+                <div class="col-xs-10">
+
+                    <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+                        <li class="active"><a href="javascript:;"><if condition="$model">修改页面<else/>添加页面</if></a></li>
+                    </ul>
+
+                    <form class="form-horizontal mb30" id="page_form" action="" method="POST">
+                        <if condition="$model">
+                            <input type="hidden" name="id" value="{$model['id']}">
+                        </if>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" style="font-weight: normal;">名称</label>
+                            <div class="col-xs-5">
+                                <input type="text" class="form-control" name="name" value="{$model['name']}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" style="font-weight: normal;">Url</label>
+                            <div class="col-xs-5">
+                                <input type="text" class="form-control" name="url" value="{$model['url']}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" style="font-weight: normal;">分组</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" name="group_id">
+                                    <option value="" <if condition="!$model['group_id']">selected</if>>无</option>
+                                    <volist name="group_list" id="rs">
+                                        <option value="{$rs['id']}" <if condition="$model['group_id'] eq $rs['id']">selected</if>>{$rs['name']}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="col-xs-offset-2 col-xs-10">
+                                <button class="btn btn-primary">保存</button>
+                                <?php
+                                    $back_url = $_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : U(MODULE_NAME.'/index');
+                                ?>
+                                <a class="btn btn-default" href="{$back_url}">返回</a>
+                            </div>
+                        </div>
+                        
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $("#page_form").submit(function(){ // bind submit event
+                $(this).ajaxSubmit({
+                    type: "POST",
+                    dataType: "json",
+                    beforeSubmit: function(){
+
+                    },
+                    success: function(json){
+                        if(json.status == 1){
+
+                            toastr.success(json.info);
+                            
+                            <if condition="$_GET['id']">
+                                var url = '{$back_url}';
+                            <else/>
+                                var url = '/page/index.html';
+                            </if>
+                            url += '#page_'+json.data.id;
+
+                            setTimeout(function(){
+                                window.location.href = url;
+                            }, 1500);
+                        }else{
+                            toastr.error(json.info);
+                        }
+                    }
+                });
+                return false;
+            });
+            
+        });
+    </script>
+</body>
+</html>
