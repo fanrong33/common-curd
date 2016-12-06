@@ -45,7 +45,7 @@
                         
                         <div class="form-group">
                             <div class="col-xs-offset-2 col-xs-10">
-                                <button class="btn btn-primary">保存</button>
+                                <button class="btn btn-primary" id="save_btn" data-loading-text="保存中...">保存</button>
                                 <?php
                                     $back_url = $_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : U(MODULE_NAME.'/index');
                                 ?>
@@ -64,11 +64,12 @@
         $(document).ready(function(){
 
             $("#page_form").submit(function(){ // bind submit event
+                // var $save_btn = $("#save_btn");
                 $(this).ajaxSubmit({
                     type: "POST",
                     dataType: "json",
                     beforeSubmit: function(){
-
+                        // $save_btn.button('loading');
                     },
                     success: function(json){
                         if(json.status == 1){
@@ -88,6 +89,7 @@
                         }else{
                             toastr.error(json.info);
                         }
+                        // $save_btn.button('reset');
                     }
                 });
                 return false;

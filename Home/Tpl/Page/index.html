@@ -23,7 +23,7 @@
 
                             <div class="dropdown" id="group_id_dropdown" style="display: inline-block;">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="group_id_dropdown_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {$group_id_text}
+                                    <if condition="$group_id_text">{$group_id_text}<else/>所有分组</if>
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="group_id_dropdown_menu" style="max-height: 300px;overflow-y: auto;">
@@ -131,7 +131,7 @@
                 $.ajax({
                     type: "POST",
                     url: "/page/delete",
-                    data: { id: id },
+                    data: { page_id: id },
                     dataType: "json",
                     success: function(json){
                         if(json.status == 1){

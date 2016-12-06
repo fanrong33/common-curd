@@ -2,7 +2,7 @@
 /**
  * 页面管理控制器类
  * @author 蔡繁荣
- * @version  1.0.2 build 20161013
+ * @version  1.0.3 build 20161206
  */
 class PageAction extends Action{
 
@@ -10,12 +10,14 @@ class PageAction extends Action{
     public function index(){
         $model = D('Page');
 
+        // 获取请求参数
         $keyword   = isset($_GET['keyword']) ? $_GET['keyword'] : '';
         $group_id  = isset($_GET['group_id']) ? $_GET['group_id'] : '';
         $order_by  = $_GET['order_by'] ? $_GET['order_by'] : 'id';
         $direction = $_GET['direction'] ? $_GET['direction'] : 'desc';
 
 
+        // 组装过滤条件
         $cond = array();
         if($keyword != ''){
             $cond['name'] = array('like', "%$keyword%");
@@ -28,8 +30,9 @@ class PageAction extends Action{
 
 
         $count = $model->where($cond)->count();
+        
         import('@.ORG.Util.Page');
-        $page = new Page($count, 15);
+        $page = new Page($count, 5);
         $page->setConfig('first', 'First');
         $page->setConfig('last' , 'Last');
         $page->setConfig('prev' , '&laquo;');
@@ -42,16 +45,17 @@ class PageAction extends Action{
         }else{
             $page_list = array();
         }
+
         
-        
-        // 获取group列表 (cache), 后台压根就不需要做什么缓存，好吗！
+
+        // 获取group列表 (cache？), 后台压根就不需要做什么缓存，好吗！
         $cond = array();
         $cond['is_deleted'] = 0;
         $group_list = D('Group')->where($cond)->select();
         $group_map = array_to_map($group_list);
 
         
-        $group_id_text = '所有分组';
+        $group_id_text = '';
         if($group_id != ''){
             $group = $group_map[$group_id];
             $group_id_text = $group['name'];
@@ -138,13 +142,13 @@ class PageAction extends Action{
                 $this->error($model->getError());
             }
 
-            $offer = $model->find($data['id']);
-            if(!$offer || $offer['is_deleted']){
+            $page = $model->find($data['id']);
+            if(!$page || $page['is_deleted']){
                 $this->error('页面不存在');
             }
 
 
-            // 判断landing page名称是否唯一
+            // 判断page名称是否唯一
             $cond = array();
             $cond['id']         = array('neq', $data['id']);
             $cond['name']       = $data['name'];
@@ -153,9 +157,8 @@ class PageAction extends Action{
                 $this->error('名称已经存在');
             }
 
+
             $data['update_time'] = time();
-
-
             $effect = $model->where(array('id'=>$data['id']))->save($data);
             if($effect){
                 // $this->success('save success');
@@ -190,7 +193,8 @@ class PageAction extends Action{
         $model = D('Page');
         if($this->isPost()){
 
-            $page_id = intval($this->_post('id'));
+            $page_id = intval($this->_post('page_id'));
+
             $page = $model->find($page_id);
             if(!$page || $page['is_deleted']){
                 $this->error('页面不存在');
