@@ -12,7 +12,7 @@ class LoginAction extends Action{
     */
     public function index(){
 
-        $model = D('Users');
+        $model = D('User');
 
         if ($this->isPost()) {
             $_POST['username'] = trim($this->_post('username'));

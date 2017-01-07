@@ -8,15 +8,14 @@ class MyinfoAction extends Action{
 
     public function index(){
 
-        $model = D('Users');
-        
+        $model = D('User');
         
         if($this->isPost()){
 
-            $_POST['name'] = trim($this->_post('name'));
-            $_POST['email']  = trim($this->_post('email'));
-            $_POST['postcode']  = trim($this->_post('postcode'));
-            $_POST['mobile']  = trim($this->_post('mobile'));
+            $_POST['name']     = trim($this->_post('name'));
+            $_POST['email']    = trim($this->_post('email'));
+            $_POST['postcode'] = trim($this->_post('postcode'));
+            $_POST['mobile']   = trim($this->_post('mobile'));
             $_POST['address']  = trim($this->_post('address'));
 
 
@@ -46,7 +45,7 @@ class MyinfoAction extends Action{
          // 获取用户的group列表
       
         $cond['id'] = $_SESSION['user']['id'];
-        $user = D('Users')->where($cond)->find();
+        $user = D('User')->where($cond)->find();
 
         $this->assign('model', $user);
 
@@ -55,7 +54,7 @@ class MyinfoAction extends Action{
 
 
     public function edit_password(){
-        $users = D('Users');
+        $users = D('User');
 
         if ($this->isPost()) {
 

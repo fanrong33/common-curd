@@ -55,12 +55,12 @@
                     <table class="table table-hover" id="page_list">
                         <thead>
                             <tr>
-                                <td style="width:300px;">
+                                <th style="width:300px;">
                                     <span class="sort <if condition="$order_by eq 'name'">{$direction}</if>" data-order-by="name">名称</span>
-                                </td>
-                                <td style="width:200px;">分组</td>
-                                <td><span class="sort <if condition="$order_by eq 'url'">{$direction}</if>" data-order-by="url">Url地址</span></td>
-                                <td>操作</td>
+                                </th>
+                                <th style="width:200px;">分组</th>
+                                <th><span class="sort <if condition="$order_by eq 'url'">{$direction}</if>" data-order-by="url">Url地址</span></th>
+                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>

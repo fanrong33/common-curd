@@ -1,8 +1,8 @@
 <?php
 /**
  * 注册管理控制器类
- * @author 肖代敏
- * @version  1.0.0 build 2017.1.6
+ * @author 肖代敏, 蔡繁荣
+ * @version  1.0.1 build 20170107
  */
 class RegisterAction extends Action{
 
@@ -10,7 +10,7 @@ class RegisterAction extends Action{
     * 用户注册
     */
     public function index(){
-        $model = D('Users');
+        $model = D('User');
 
         //判断提交方式
         if ($this->isPost()) {
