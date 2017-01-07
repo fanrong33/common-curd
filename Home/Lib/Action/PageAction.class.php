@@ -27,6 +27,7 @@ class PageAction extends Action{
             $cond['group_id'] = $group_id;
         }
         $cond['is_deleted'] = 0;
+        $cond['user_id'] = $_SESSION['user']['id'];
 
 
         $count = $model->where($cond)->count();
@@ -51,6 +52,7 @@ class PageAction extends Action{
         // 获取group列表 (cache？), 后台压根就不需要做什么缓存，好吗！
         $cond = array();
         $cond['is_deleted'] = 0;
+         $cond['user_id'] = $_SESSION['user']['id'];
         $group_list = D('Group')->where($cond)->select();
         $group_map = array_to_map($group_list);
 
@@ -58,9 +60,10 @@ class PageAction extends Action{
         $group_id_text = '';
         if($group_id != ''){
             $group = $group_map[$group_id];
+
             $group_id_text = $group['name'];
         }
-        
+        // var_dump($group_id_text);
         
         $this->assign('list', $page_list);
         $this->assign('page', $page->shows());
@@ -103,6 +106,7 @@ class PageAction extends Action{
 
             $data['update_time'] = time();
             $data['create_time'] = time();
+            $data['user_id'] = $_SESSION['user']['id'];
 
             $insert_id = $model->add($data);
             if($insert_id){
@@ -116,6 +120,7 @@ class PageAction extends Action{
         // 获取用户的group列表
         $cond = array();
         $cond['is_deleted'] = 0;
+        $cond['user_id'] = $_SESSION['user']['id'];
         $group_list = D('Group')->field('id,name')->where($cond)->order('id asc')->select();
 
 
@@ -147,7 +152,7 @@ class PageAction extends Action{
                 $this->error('页面不存在');
             }
 
-
+ 
             // 判断page名称是否唯一
             $cond = array();
             $cond['id']         = array('neq', $data['id']);
@@ -180,6 +185,7 @@ class PageAction extends Action{
         // 获取用户的group列表
         $cond = array();
         $cond['is_deleted'] = 0;
+         $cond['user_id'] = $_SESSION['user']['id'];
         $group_list = D('Group')->field('id,name')->where($cond)->order('id asc')->select();
 
 
@@ -193,7 +199,7 @@ class PageAction extends Action{
         $model = D('Page');
         if($this->isPost()){
 
-            $page_id = intval($this->_post('page_id'));
+            $page_id = intval ($this->_post('page_id'));
 
             $page = $model->find($page_id);
             if(!$page || $page['is_deleted']){

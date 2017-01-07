@@ -10,13 +10,31 @@ class GroupAction extends Action{
     public function index(){
         $model = D('Group');
 
+        $keyword   = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+
         $cond = array();
+        if($keyword != ''){
+            $cond['name'] = array('like', "%$keyword%");
+            $this->assign('keyword', $keyword);
+        }
         $cond['is_deleted'] = 0;
+        $cond['user_id'] = $_SESSION['user']['id'];
 
         $group_list = $model->field('is_deleted,update_time', true)->where($cond)->order('id asc')->select();
 
+        $count = $model->where($cond)->count();
+        
+        import('@.ORG.Util.Page');
+        $page = new Page($count, 5);
+        $page->setConfig('first', 'First');
+        $page->setConfig('last' , 'Last');
+        $page->setConfig('prev' , '&laquo;');
+        $page->setConfig('next' , '&raquo;');
+        $page->setConfig('theme', '%first% %upPage% %nowPage% %downPage% %end%');
+
         
         $this->assign('list', $group_list);
+        $this->assign('page', $page->shows());
         $this->display();
     }
 
@@ -45,6 +63,7 @@ class GroupAction extends Action{
                 $this->error('名称已存在');
             }
 
+            $data['user_id'] = $_SESSION['user']['id'];
             $data['update_time'] = time();
             $data['create_time'] = time();
 

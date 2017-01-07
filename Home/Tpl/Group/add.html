@@ -1,21 +1,22 @@
 <include file="Public:header" />
-<body>
-    <include file="Public:navbar" />
+<body><!-- action: .navigator-collapse -->
+    
+    <include file="Public:nav" />
+    
+    <div class="page-container">
+        
+        <div class="page-content">
 
-    <section>
-        <div class="container-fluid">
-            <div class="row">
+            <ul class="page-breadcrumb">
+                <li><a href="">首页</a></li>
+                <span>&gt;</span>
+                <li class="active">添加页面</li>
+            </ul>
 
-                <div class="col-xs-2" style="padding-top:20px;">
-                    <include file="Public:nav" />
-                </div>
-                <div class="col-xs-10">
 
-                    <ul class="nav nav-tabs" style="margin-top:20px; margin-bottom:20px;">
-                        <li class="active"><a href="javascript:;"><if condition="$model">编辑分组<else/>新建分组</if></a></li>
-                    </ul>
-
-                    <form class="form-horizontal" id="group_form" action="" method="POST">
+            <div class="form-view">
+                
+                 <form class="form-horizontal" id="group_form" action="" method="POST">
                         <if condition="$model">
                             <input type="hidden" name="id" value="{$model['id']}">
                         </if>
@@ -25,7 +26,7 @@
                             <div class="col-xs-10">
                                 <div class="row">
                                     <div class="col-xs-4">
-                                        <input type="text" class="form-control" name="name" value="{$model['name']}" />
+                                        <input type="text" class="form-control" name="name" placeholder="请输入分组名称" value="{$model['name']}" />
                                     </div>
                                 </div>
                             </div>
@@ -39,16 +40,43 @@
                         </div>
                         
                     </form>
+       
+            </div><!-- .form-view-->
 
-                </div>
-            </div>
-        </div>
-    </section>
+        
+        </div><!-- .page-content-->
+    </div><!-- .page-container -->
 
-    <script type="text/javascript">
-        $(document).ready(function(){
 
-            $("#group_form").submit(function(){ // bind submit event
+    <include file="Public:sidebar" />
+
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="/home/js/toastr/toastr.min.js"></script>
+    <script src="/home/js/ajaxForm.js"></script>
+    <script>
+    $(document).ready(function(){
+
+        // 绑定折叠侧边菜单栏事件
+        $("#toggle_navigator").click(function(){
+            $(this).toggleClass('fold');
+
+            $("body").toggleClass('navigator-collapse');
+        });
+
+
+        // 侧边菜单箭头事件绑定
+        $("#sidebar .sidebar-drop").click(function(){
+
+            if(!$(this).parent().hasClass('expand')){
+                $("#sidebar .sidebar-menu-item.expand").removeClass('expand');
+            }
+
+            $(this).parent().toggleClass('expand');
+
+        });
+
+        $("#group_form").submit(function(){ // bind submit event
                 $(this).ajaxSubmit({
                     type: "POST",
                     dataType: "json",
@@ -67,9 +95,9 @@
                     }
                 });
                 return false;
-            });
-            
         });
+
+    });
     </script>
 </body>
 </html>

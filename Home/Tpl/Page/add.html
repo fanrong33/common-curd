@@ -1,20 +1,22 @@
 <include file="Public:header" />
-<body>
 
-    <section>
-        <div class="container-fluid">
-            <div class="row" style="padding-top: 20px;">
+<body><!-- action: .navigator-collapse -->
 
-                <div class="col-xs-2">
-                    <include file="Public:nav" />
-                </div>
-                <div class="col-xs-10">
+    <include file="Public:nav" />
+   
+    <div class="page-container">
+        
+        <div class="page-content">
 
-                    <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-                        <li class="active"><a href="javascript:;"><if condition="$model">修改页面<else/>添加页面</if></a></li>
-                    </ul>
+            <ul class="page-breadcrumb">
+                <li><a href="">首页</a></li>
+                <span>&gt;</span>
+                <li class="active">添加表格</li>
+            </ul>
 
-                    <form class="form-horizontal mb30" id="page_form" action="" method="POST">
+            <div class="form-view">
+                
+                  <form class="form-horizontal mb30" id="page_form" action="" method="POST">
                         <if condition="$model">
                             <input type="hidden" name="id" value="{$model['id']}">
                         </if>
@@ -55,47 +57,68 @@
                         
                     </form>
 
-                </div>
-            </div>
-        </div>
-    </section>
+            </div><!-- .form-view-->
 
-    <script type="text/javascript">
-        $(document).ready(function(){
+        
+        </div><!-- .page-content-->
+    </div><!-- .page-container -->
 
-            $("#page_form").submit(function(){ // bind submit event
-                // var $save_btn = $("#save_btn");
-                $(this).ajaxSubmit({
-                    type: "POST",
-                    dataType: "json",
-                    beforeSubmit: function(){
-                        // $save_btn.button('loading');
-                    },
-                    success: function(json){
-                        if(json.status == 1){
+    
+    <include file="Public:sidebar" />
 
-                            toastr.success(json.info);
-                            
-                            <if condition="$_GET['id']">
-                                var url = '{$back_url}';
-                            <else/>
-                                var url = '/page/index.html';
-                            </if>
-                            url += '#page_'+json.data.id;
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="/home/js/toastr/toastr.min.js"></script>
+    <script src="/home/js/ajaxForm.js"></script>
+    <script>
+    $(document).ready(function(){
 
-                            setTimeout(function(){
-                                window.location.href = url;
-                            }, 1500);
-                        }else{
-                            toastr.error(json.info);
-                        }
-                        // $save_btn.button('reset');
-                    }
-                });
-                return false;
-            });
-            
+        // 绑定折叠侧边菜单栏事件
+        $("#toggle_navigator").click(function(){
+            $(this).toggleClass('fold');
+
+            $("body").toggleClass('navigator-collapse');
         });
+
+
+        // 侧边菜单箭头事件绑定
+        $("#sidebar .sidebar-drop").click(function(){
+
+            if(!$(this).parent().hasClass('expand')){
+                $("#sidebar .sidebar-menu-item.expand").removeClass('expand');
+            }
+
+            $(this).parent().toggleClass('expand');
+
+        });
+
+          $('#page_form').submit(function(){
+            $(this).ajaxSubmit({
+                type:"POST",
+                datetype:"json",
+                beforeSubmit: function(){},
+                success:function(json){
+                    if (json.status == 1) {
+                        toastr.success(json.info);
+                        setTimeout(function(){
+                            location.href = '/page/index'
+                        },1500);
+
+                    }else{
+                        toastr.error(json.info);
+                    }
+
+                }
+            });
+            return false;
+
+        });
+
+
+           
+
+
+    });
     </script>
 </body>
 </html>

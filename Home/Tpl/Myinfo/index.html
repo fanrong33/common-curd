@@ -1,0 +1,222 @@
+<include file="Public:header" />
+<body><!-- action: .navigator-collapse -->
+    
+    <include file="Public:nav" />
+
+    
+    <div class="page-container">
+        
+        <div class="page-content">
+
+            <ul class="page-breadcrumb">
+                <li><a href="">首页</a></li>
+                <span>&gt;</span>
+                <li class="active">账号信息</li>
+            </ul>
+
+
+            <div class="form-view">
+                
+                <form class="form-horizontal" id="account_form" method="post" role="form">
+                    <div class="h5" style="padding-left: 5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #555;">基本信息</div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-xs-2 control-label">用户名：</label>
+                        <div class="col-xs-3 pl0">
+                            <p class="form-control-static">{$Think.session.user.username}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-xs-2 control-label">密码：</label>
+                        <div class="col-xs-3 pl0">
+                            <p class="form-control-static">****** &nbsp;&nbsp;<a href="#" data-toggle="modal" data-target="#myModal">修改密码</a></p>
+                        </div>
+                    </div>
+                     <if condition="$model">
+                            <input type="hidden" name="id" value="{$model['id']}">
+                        </if> 
+ 
+                    <div class="h5" style="padding-left: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #555;">会员信息</div>
+                    <div class="form-group">
+                        <label for="" class="col-xs-2 control-label">联系人姓名：</label>
+                        <div class="col-xs-3 pl0">
+                            <input type="text" class="form-control" id="" name="name" value="{$model['name']}" placeholder="">
+                        </div>
+                    </div>
+                    <!-- <?php print_r($model);?> -->
+                    <div class="form-group">
+                        <label for="" class="col-xs-2 control-label">邮箱地址：</label>
+                        <div class="col-xs-3 pl0">
+                            <span class="text-required">*</span>
+                            <input type="email" class="form-control" id="" name="email" value="{$model['email']}" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-xs-2 control-label">手机：</label>
+                        <div class="col-xs-3 pl0">
+                            <input type="text" class="form-control" id="" name="mobile" value="{$model['mobile']}" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-xs-2 control-label">联系地址：</label>
+                        <div class="col-xs-3 pl0">
+                            <input type="text" class="form-control" id="" name="address" value="{$model['address']}" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-xs-2 control-label">邮编：</label>
+                        <div class="col-xs-3 pl0">
+                            <input type="text" class="form-control" id="" name="postcode" value="{$model['postcode']}" placeholder="">
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10  pl0">
+                            <button type="submit" class="btn btn-primary">添加</button>
+                        </div>
+                    </div> -->
+
+
+                    <div class="form-submit-section">
+                        <button type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
+                        <a class="btn btn-link">取消</a>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+        
+        
+    </div><!-- .page-container -->
+
+    
+   <include file="Public:sidebar" />
+    
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <form class="form-horizontal" id="edit_password_form" action="{:U('Myinfo/edit_password')}" method="post" role="form">
+        <div class="modal-dialog" style="margin-top: 100px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">当前密码</label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" name="password" placeholder="请输入当前密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">新的密码</label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" name="new_password" placeholder="请输入6-20位新密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">确认密码</label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" name="confirm_password" placeholder="请输入确认密码">
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="/home/js/toastr/toastr.min.js"></script>
+    <script src="/home/js/ajaxForm.js"></script>
+    <script>
+    $(document).ready(function(){
+
+        // 绑定折叠侧边菜单栏事件
+        $("#toggle_navigator").click(function(){
+            $(this).toggleClass('fold');
+
+            $("body").toggleClass('navigator-collapse');
+        });
+
+
+        // 侧边菜单箭头事件绑定
+        $("#sidebar .sidebar-drop").click(function(){
+
+            if(!$(this).parent().hasClass('expand')){
+                $("#sidebar .sidebar-menu-item.expand").removeClass('expand');
+            }
+
+            $(this).parent().toggleClass('expand');
+
+        });
+
+
+
+        $("#account_form").submit(function(){ // bind submit event
+            var $primary_btn = $("#primary_btn");
+
+            $(this).ajaxSubmit({
+                type: "POST",
+                dataType: "json",
+                beforeSubmit: function(){
+                    $primary_btn.button('loading');
+                },
+                success: function(json){
+                    if(json.status == 1){
+
+                        toastr.success(json.info);
+                        
+                    }else{
+                        toastr.error(json.info);
+                    }
+                },
+                complete: function(){
+                    $primary_btn.button('reset');
+                }
+            });
+            return false;
+        });
+        
+
+        // 绑定修改密码表单提交事件
+        $("#edit_password_form").submit(function(){ // bind submit event
+            $(this).ajaxSubmit({
+                type: "POST",
+                dataType: "json",
+                beforeSubmit: function(){ },
+                success: function(json){
+                    if(json.status == 1){
+                        toastr.success(json.info);
+
+                        setTimeout(function(){
+                            $('#myModal').modal('hide');
+                            $("#myModal").find('form').get(0).reset();
+                        }, 1000);
+
+                    }else{
+                        toastr.error(json.info);
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+    </script>
+</body>
+</html>
