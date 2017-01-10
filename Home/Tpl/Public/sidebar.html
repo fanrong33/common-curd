@@ -1,27 +1,40 @@
 <div class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-        
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-section-title" href="dashboard.html">
-                    <i class="glyphicon glyphicon-dashboard"></i>
-                    <span>仪表盘</span>
-                </a>
-            </li>
-            <li class="sidebar-menu-item sidebar-menu-item-has-child active expand">
-                <a class="sidebar-menu-section-title" href="index.html">
-                    <i class="glyphicon glyphicon-th-list"></i>
-                    <span>页面</span>
-                </a>
-                <em class="sidebar-drop">
-                    <i class="glyphicon glyphicon-chevron-right"></i>
-                </em>
+    <ul class="sidebar-menu">
+    
+        <li class="sidebar-menu-item">
+            <a class="sidebar-menu-section-title" href="dashboard.html">
+                <i class="glyphicon glyphicon-dashboard"></i>
+                <span>仪表盘</span>
+            </a>
+        </li>
+        <li class="sidebar-menu-item sidebar-menu-item-has-child active expand">
+            <a class="sidebar-menu-section-title" href="index.html">
+                <i class="glyphicon glyphicon-th-list"></i>
+                <span>页面</span>
+            </a>
+            <em class="sidebar-drop">
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </em>
 
-                <ul class="sidebar-child-menu">
-                    <li><a href="{:U('Page/index')}">页面列表</a></li>
-                    <li><a href="{:U('Group/index')}">分组</a></li>
-                </ul><!-- .sidebar-child-menu -->
-            </li><!-- sidebar-menu-item -->
+            <ul class="sidebar-child-menu">
+                <li><a href="{:U('Page/index')}">页面列表</a></li>
+                <li><a href="{:U('Group/index')}">分组</a></li>
+            </ul><!-- .sidebar-child-menu -->
+        </li><!-- sidebar-menu-item -->
+        <li class="sidebar-menu-item sidebar-menu-item-has-child">
+            <a class="sidebar-menu-section-title" href="index.html">
+                <i class="glyphicon glyphicon-th-list"></i>
+                <span>报告</span>
+            </a>
+            <em class="sidebar-drop">
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </em>
             
-        </ul>
-    </div><!-- .sidebar -->
+            <ul class="sidebar-child-menu">
+                <li><a href="{:U('Report/index')}">整体报告</a></li>
+            </ul><!-- .sidebar-child-menu -->
+        </li><!-- sidebar-menu-item -->
+        
+    </ul>
+</div><!-- .sidebar -->
     
