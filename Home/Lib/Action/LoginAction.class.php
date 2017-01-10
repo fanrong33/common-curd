@@ -27,24 +27,24 @@ class LoginAction extends Action{
 
 
             $cond = array();
-            if($model->check($username, 'email', 'regex')){
-                $cond['email'] = $username;
+            if($model->check($data['username'], 'email', 'regex')){
+                $cond['email'] = $data['username'];
             }else{
-                $cond['username'] = $username;
+                $cond['username'] = $data['username'];
             }
             $cond['is_deleted'] = 0;
 
 
             //判断用户名和密码是否正确
             $user = $model->where($cond)->find();
-            if(!$user || md5($password) != $user['password']){
+            if(!$user || md5($data['password']) != $user['password']){
                 $this->error('登录名或者密码错误');
             }
 
             $_SESSION['user'] = $user;
 
             // 记住登录用户名
-            cookie('remeber_me', $username, 3600*24*30);
+            cookie('remeber_me', $data['username'], 3600*24*30);
 
             $this->ajaxReturn('','登录成功', 1);
         }
