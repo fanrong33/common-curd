@@ -8,7 +8,7 @@ class MyinfoAction extends Action{
 
     public function index(){
 
-        $model = D('User');
+        $model = D('Users');
         
         if($this->isPost()){
 
@@ -45,7 +45,7 @@ class MyinfoAction extends Action{
          // 获取用户的group列表
       
         $cond['id'] = $_SESSION['user']['id'];
-        $user = D('User')->where($cond)->find();
+        $user = D('Users')->where($cond)->find();
 
         $this->assign('model', $user);
 
@@ -54,7 +54,7 @@ class MyinfoAction extends Action{
 
 
     public function edit_password(){
-        $users = D('User');
+        $users = D('Users');
 
         if ($this->isPost()) {
 
