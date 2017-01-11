@@ -8,7 +8,7 @@ class MyinfoAction extends Action{
 
     public function index(){
 
-        $model = D('Users');
+        $model = D('User');
         
         if($this->isPost()){
 
@@ -26,7 +26,6 @@ class MyinfoAction extends Action{
             if(false === $data = $model->validate($_validate)->create()){
                 $this->error($model->getError());
             }
-         var_dump($data);die;
            
             $data['user_id'] = $_SESSION['user']['id'];
             $insert_id = $model->add($data);
@@ -45,7 +44,7 @@ class MyinfoAction extends Action{
          // 获取用户的group列表
       
         $cond['id'] = $_SESSION['user']['id'];
-        $user = D('Users')->where($cond)->find();
+        $user = D('User')->where($cond)->find();
 
         $this->assign('model', $user);
 
@@ -57,7 +56,7 @@ class MyinfoAction extends Action{
      * 修改密码
      */
     public function edit_password(){
-        $model = D('Users');
+        $model = D('User');
 
         if ($this->isPost()) {
 
@@ -80,13 +79,13 @@ class MyinfoAction extends Action{
                 $this->error('当前密码错误');
             }
 
+
             $hash_password = md5($data['new_password']);
 
-
             $data = array();
-            $data['password']   = $hash_password;
-            $data['updateTime'] = time();
-            $effect = $model->where(array('id'=>$this->$_SESSION['user']['id']))->save($data);
+            $data['password']    =  $hash_password;
+            $data['update_time'] = time();
+            $effect = $model->where(array('id' => $this->$_SESSION['user']['id']))->save($data);
             
             if($effect){
                 $this->success('修改成功');

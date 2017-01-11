@@ -52,7 +52,7 @@ class LoginAction extends Action{
         // 如果已经登录，则直接跳转到面板首页
         $user = session('user');
         if($user){
-            U('Dashboard/index', array(), true, true);
+            U('Page/index', array(), true, true);
         }
 
 
