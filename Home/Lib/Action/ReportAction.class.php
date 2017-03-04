@@ -430,6 +430,182 @@ EOF;
     }
 
 
+    /**
+     * 导出整体报告到cvs
+     */
+    public function export_summary_cvs(){
+        set_time_limit(0);
+
+        $begin_date = $this->_get('begin_date');
+        $end_date   = $this->_get('end_date');
+        
+
+        // 1、安全验证，组装sql方式, 需要特别防止sql注入
+        if(!preg_match('/^\d{4}-\d{2}-\d{2}$/', $begin_date)){
+            $this->ajaxReturn('', '起始日期格式错误', 0);
+        }
+        if(!preg_match('/^\d{4}-\d{2}-\d{2}$/', $end_date)){
+            $this->ajaxReturn('', '结束日期格式错误', 0);
+        }
+        
+
+        import('@.ORG.Util.ChartsUtil');
+
+        $developer_id_str = ' AND developerId='.$this->_developer['id'];
+        if($begin_date && $end_date){
+            $create_time_str = ChartsUtil::generate_time_str('timestamp', $begin_date, $end_date);
+        }
+
+
+        
+        $model = M('Report');
+
+        // 按天统计日期区间的销售数据
+        $sql =<<<EOF
+            select DATE_FORMAT(FROM_UNIXTIME(timestamp), '%Y-%m-%d') days, 
+            placementId,
+            sum(impressions) as impressions,
+            sum(clicks)      as clicks,
+            sum(md_clicks)   as md_clicks,
+            sum(lead)        as lead,
+            sum(md_lead)     as md_lead,
+            ''               as ctr,
+            sum(cpc)         as cpc,
+            sum(leadvalue)   as leadvalue
+            from t_report
+            where 1=1 
+            $developer_id_str
+            $create_time_str
+            group by days, placementId
+EOF;
+        $data_list = $model->query($sql);
+        
+
+        // 对于开发者，默认只展示真实点击数量，对于运营增加一个参数叫做模拟点击展示比例，默认为0。
+        // 如果为0.1则展示给开发者的总点击数则为：真实点击数量+模拟点击数量*0.1
+        $tmp_data_list = array();
+        foreach ($data_list as $key => $rs) {
+            // 获取placement缓存信息
+            $placement_config = get_placement_config($rs['placementId']);
+
+
+            $clicks = floor($rs['clicks'] + $rs['md_clicks']*$placement_config['mdClickRatio']);
+            $lead   = floor($rs['lead'] + $rs['md_lead']*$placement_config['mdLeadRatio']);
+
+            if(isset($tmp_data_list[$rs['days']])){
+                $rs['impressions'] = $tmp_data_list[$rs['days']]['impressions'] + $rs['impressions'];
+                $rs['clicks']      = $tmp_data_list[$rs['days']]['clicks'] + $clicks;
+                $rs['lead']        = $tmp_data_list[$rs['days']]['lead'] + $lead;
+                $rs['cpc']         = $tmp_data_list[$rs['days']]['cpc'] + $rs['cpc'];
+                $rs['leadvalue']   = $tmp_data_list[$rs['days']]['leadvalue'] + $rs['leadvalue'];
+            }else{
+                $rs['clicks'] = $clicks;
+                $rs['lead']   = $lead;
+            }
+            unset($rs['placementId'], $rs['md_clicks'], $rs['md_lead']);
+            $tmp_data_list[$rs['days']] = $rs;
+        }
+        $data_list = $tmp_data_list;
+        unset($tmp_data_list);
+
+
+        $y_data_map = array();
+        if($data_list){ // 有可能存在，也可能不存在数据
+            foreach($data_list as $rs){
+
+                $rs['ctr']       = round($rs['clicks']/$rs['impressions']*100, 2).'%';
+                $rs['cpc']       = sprintf('%.2f', $rs['cpc']);
+                $rs['leadvalue'] = sprintf('%.2f', $rs['leadvalue']);
+
+
+                $y_data_map[$rs['days']] = $rs;
+            }
+        }
+
+
+        $day_list = ChartsUtil::generate_day_list($begin_date, $end_date);
+
+        // 对数据进行安全验证，没有数据，则用0进行填补
+        foreach ($day_list as $x_rs) {
+            if(!isset($y_data_map[$x_rs])){
+                $y_data_map[$x_rs] = array(
+                    'days'        => $x_rs,
+                    'impressions' => 0,
+                    'clicks'      => 0,
+                    'lead'        => 0,
+                    'ctr'         => '0%',
+                    'cpc'         => '0.00',
+                    'leadvalue'   => '0.00',
+                );
+            }
+        }
+        ksort($y_data_map, SORT_NATURAL);
+
+
+        $list = array_values($y_data_map);
+
+
+        // 3、写入csv文件，并导出
+        $dir = 'export/report/'.$this->_developer['id'].'/'.date('Ymd').'/';
+        if(!is_dir($dir)){
+            mkdir($dir, 0755, true);
+        }
+
+        $timestamp = time();
+        $filename = 'report_summary_'.$timestamp.'_'.$begin_date.'_'.$end_date.'.csv';
+        if(!is_file($dir.$filename)){
+
+            $fp = fopen($dir.$filename, 'a');
+
+            // 输出Excel列名信息
+            $head = array("days", "impressions", 'clicks', 'lead', 'ctr', 'cpc', 'leadvalue');
+            foreach ($head as $k => $v) {
+                // CSV的Excel支持GBK编码，一定要转换，否则乱码
+                $head[$k] = mb_convert_encoding(trim($v), 'gbk', 'utf-8');
+            }
+
+            // 将数据通过fputcsv写到文件句柄
+            fputcsv($fp, $head);
+        }else{
+            $fp = fopen($dir.$filename, 'a');
+        }
+
+
+
+
+        // 计数器
+        $number = 0;
+        // 每隔$limit行，刷新一下输出buffer，不要太大，也不要太小
+        $limit = 2000; // 100000
+
+        // 逐行取出数据，不浪费内存
+        $count = count($list);
+
+        for($j=0; $j<$count; $j++) {
+
+            $number ++;
+            if ($limit == $count) { //刷新一下输出buffer，防止由于数据过多造成问题
+                ob_flush();
+                flush();
+                $number = 0;
+            }
+            $row[] = $list[$j];
+            
+
+            foreach ($row as $i => $v) {
+                // $row[$i] = mb_convert_encoding(trim($v),'gbk','utf-8');
+                fputcsv($fp, $row[$i]);
+            }
+            unset($row);
+        }
+        fclose($fp);
+
+
+        import('@.ORG.Net.Http');
+        Http::download($dir.$filename);
+    }
+    
+
 }
 
 ?>
